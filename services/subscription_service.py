@@ -1,6 +1,6 @@
 from decimal import Decimal
 from core.exceptions import AppException
-from services.notification_service import NotificationService  # nuevo import
+from services.notification_service import NotificationService  
 
 class SubscriptionService:
     def __init__(self, repository):
@@ -9,41 +9,51 @@ class SubscriptionService:
         self.notifier = NotificationService()
 
     def subscribe(self, fund_id: str, notification_method: str):
-        fund = self.repo.get_fund(fund_id)
-        if not fund:
+       existing_subscription = self.repo.get_subscription(self.DEFAULT_ACCOUNT_ID, fund_id)
+       if existing_subscription:
+            raise AppException(f"Ya está suscrito al fondo {fund_id}")
+
+       fund = self.repo.get_fund(fund_id)
+       if not fund:
             raise AppException(f"Fondo con ID {fund_id} no existe")
 
-        account = self.repo.get_account(self.DEFAULT_ACCOUNT_ID)
-        if not account:
+       account = self.repo.get_account(self.DEFAULT_ACCOUNT_ID)
+       if not account:
             raise AppException("Cuenta no encontrada")
 
-        balance = Decimal(account["Balance"])
-        min_amount = Decimal(fund["MinAmount"])
+       balance = Decimal(account["Balance"])
+       min_amount = Decimal(fund["MinAmount"])
 
-        if balance < min_amount:
+       if balance < min_amount:
             raise AppException(f"No tiene saldo disponible para vincularse al fondo {fund['Name']}")
 
-        subscription = self.repo.create_subscription(self.DEFAULT_ACCOUNT_ID, fund_id)
+       subscription = self.repo.create_subscription(self.DEFAULT_ACCOUNT_ID, fund_id)
 
-        new_balance = balance - min_amount
-        self.repo.update_account_balance(self.DEFAULT_ACCOUNT_ID, new_balance)
+       new_balance = balance - min_amount
+       self.repo.update_account_balance(self.DEFAULT_ACCOUNT_ID, new_balance)
 
-        self.repo.create_transaction(self.DEFAULT_ACCOUNT_ID, fund_id, min_amount, "APERTURA")
+       self.repo.create_transaction(self.DEFAULT_ACCOUNT_ID, fund_id, min_amount, "APERTURA")
 
-        mensaje = f"Te has suscrito al fondo {fund['Name']}."
-        if notification_method == "email":
+       mensaje = f"Te has suscrito al fondo {fund['Name']}."
+        
+       if notification_method.lower() in ["email", "both"]:
             self.notifier.send_email(
-            to_email=account["Email"],
-            subject="Confirmación de suscripción",
-            body=mensaje
-)
-        else:
-            self.notifier.send_sms(
-                phone_number=account["Phone"],
-                message=mensaje
+                to_email=account["Email"],
+                subject="Confirmación de suscripción",
+                body=mensaje
             )
 
-        return subscription
+        
+       if notification_method.lower() in ["sms", "both"]:
+            if account.get("Phone"):
+                self.notifier.send_sms(
+                    phone_number=account["Phone"],
+                    message=mensaje
+                )
+            else:
+                print("No hay número de teléfono registrado en el account.")
+
+       return subscription 
 
     def unsubscribe(self, fund_id: str):
         subscription = self.repo.get_subscription(self.DEFAULT_ACCOUNT_ID, fund_id)
