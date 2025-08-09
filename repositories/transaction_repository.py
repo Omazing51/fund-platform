@@ -21,3 +21,11 @@ class TransactionRepository:
             "CreatedAt": iso_now()
         })
         return transaction_id
+
+    def get_recent_transactions(self, account_id: str, limit: int = 10):
+        resp = self.table.scan(
+            FilterExpression="AccountId = :acc",
+            ExpressionAttributeValues={":acc": account_id}
+        )
+        items = sorted(resp.get("Items", []), key=lambda x: x["CreatedAt"], reverse=True)
+        return items[:limit]
