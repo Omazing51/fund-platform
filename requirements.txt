@@ -8,4 +8,5 @@ pytest
 pytest-asyncio
 pytest-mock
 httpx
+email-validator
 typing-extensions
