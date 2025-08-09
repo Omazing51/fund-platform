@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+boto3
+pydantic
+python-dotenv
+pytest
+pytest-asyncio
+httpx
+typing-extensions
