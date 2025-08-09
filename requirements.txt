@@ -6,5 +6,6 @@ pydantic-settings
 python-dotenv
 pytest
 pytest-asyncio
+pytest-mock
 httpx
 typing-extensions
