@@ -1,5 +1,8 @@
 from boto3 import resource
 from os import getenv
+from dotenv import load_dotenv
+
+load_dotenv()
 
 dynamodb = resource("dynamodb",
          aws_access_key_id=getenv("AWS_ACCESS_KEY_ID"),
