@@ -36,6 +36,17 @@ class SubscriptionRepository:
             ExpressionAttributeValues={":b": new_balance}
         )
 
+    def get_subscription(self, account_id: str, fund_id: str):
+        resp = self.subscriptions_table.scan(
+            FilterExpression="AccountId = :acc AND FundId = :fund",
+            ExpressionAttributeValues={":acc": account_id, ":fund": fund_id}
+        )
+        items = resp.get("Items", [])
+        return items[0] if items else None
+
+    def delete_subscription(self, subscription_id: str):
+        self.subscriptions_table.delete_item(Key={"SubscriptionId": subscription_id})
+
     def create_transaction(self, account_id: str, fund_id: str, amount: Decimal, transaction_type: str):
         txn_id = str(uuid.uuid4())
         now = datetime.now(timezone.utc).isoformat()
@@ -47,3 +58,5 @@ class SubscriptionRepository:
             "Type": transaction_type,
             "CreatedAt": now
         })
+
+   
