@@ -1,13 +1,13 @@
 from boto3 import resource
 from os import getenv
-from dotenv import load_dotenv
+from core.config import settings
 
-load_dotenv()
-
-dynamodb = resource("dynamodb",
-         aws_access_key_id=getenv("AWS_ACCESS_KEY_ID"),
-         aws_secret_access_key=getenv("AWS_SECRET_ACCESS_KEY"),
-         region_name=getenv("REGION_NAME"))
+dynamodb = resource(
+    "dynamodb",
+    aws_access_key_id=settings.aws_access_key_id,
+    aws_secret_access_key=settings.aws_secret_access_key,
+    region_name=settings.region_name
+)
 
 tables = [
      {
