@@ -1,5 +1,4 @@
 from boto3 import resource
-from os import getenv
 from core.config import settings
 
 dynamodb = resource(

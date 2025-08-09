@@ -1,10 +1,12 @@
 from decimal import Decimal
 from core.exceptions import AppException
+from services.notification_service import NotificationService  # nuevo import
 
 class SubscriptionService:
     def __init__(self, repository):
         self.repo = repository
         self.DEFAULT_ACCOUNT_ID = "DEFAULT_ACCOUNT"
+        self.notifier = NotificationService()
 
     def subscribe(self, fund_id: str, notification_method: str):
         fund = self.repo.get_fund(fund_id)
@@ -28,10 +30,18 @@ class SubscriptionService:
 
         self.repo.create_transaction(self.DEFAULT_ACCOUNT_ID, fund_id, min_amount, "APERTURA")
 
+        mensaje = f"Te has suscrito al fondo {fund['Name']}."
         if notification_method == "email":
-            print(f"Enviando email a {account['Email']} confirmando suscripción")
+            self.notifier.send_email(
+            to_email=account["Email"],
+            subject="Confirmación de suscripción",
+            body=mensaje
+)
         else:
-            print(f"Enviando SMS a {account['Phone']} confirmando suscripción")
+            self.notifier.send_sms(
+                phone_number=account["Phone"],
+                message=mensaje
+            )
 
         return subscription
 

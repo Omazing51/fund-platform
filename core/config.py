@@ -4,6 +4,7 @@ class Settings(BaseSettings):
     aws_access_key_id: str
     aws_secret_access_key: str
     region_name: str
+    email_source: str
 
     class Config:
         env_file = ".env"
