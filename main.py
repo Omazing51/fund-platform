@@ -6,8 +6,22 @@ from routes.subscription_routes import router as subscription_router
 from routes.unsubscribe_routes import router as unsubscribe_router
 from routes.transaction_routes import router as transaction_router
 from routes.fund_routes import router as fund_router
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:5173",  
+    "http://127.0.0.1:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  
+    allow_credentials=True,
+    allow_methods=["*"],  
+    allow_headers=["*"], 
+)
 
 app.add_exception_handler(AppException, app_exception_handler)
 
