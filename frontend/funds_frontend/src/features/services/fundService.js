@@ -11,3 +11,4 @@ export async function getFundById(id) {
   const response = await axios.get(`${API_URL}/${id}`);
   return response.data.data;
 }
+

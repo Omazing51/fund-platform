@@ -18,3 +18,13 @@ export async function deleteSubscription(fundId) {
   });
   return response.data;
 }
+
+export async function createSubscription(FundId, NotificationMethod) {
+  const response = await axios.post(API_URL, {
+    FundId: String(FundId),       
+    NotificationMethod            
+  }, {
+    headers: { "Content-Type": "application/json" }
+  });
+  return response.data;
+}

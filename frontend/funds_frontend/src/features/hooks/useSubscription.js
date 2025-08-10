@@ -25,6 +25,7 @@ async function removeSubscription(fundId) {
   try {
     await deleteSubscription(fundId);
     setSubscriptions(prev => prev.filter(s => s.FundId !== fundId));
+      window.location.reload();
   } catch (error) {
     console.error("Error eliminando suscripción", error);
   }
