@@ -12,6 +12,8 @@ class SubscriptionService:
        existing_subscription = self.repo.get_subscription(self.DEFAULT_ACCOUNT_ID, fund_id)
        if existing_subscription:
             raise AppException(f"Ya está suscrito al fondo {fund_id}")
+    
+    
 
        fund = self.repo.get_fund(fund_id)
        if not fund:
@@ -78,3 +80,6 @@ class SubscriptionService:
             "message": f"Se eliminó la suscripción al fondo {fund_id}",
             "Balance": float(new_balance)
         }
+    
+    def get_all_subscriptions(self):
+        return self.repo.get_all_subscriptions()

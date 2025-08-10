@@ -43,6 +43,10 @@ class SubscriptionRepository:
         )
         items = resp.get("Items", [])
         return items[0] if items else None
+    
+    def get_all_subscriptions(self):
+       resp = self.subscriptions_table.scan()
+       return resp.get("Items", [])
 
     def delete_subscription(self, subscription_id: str):
         self.subscriptions_table.delete_item(Key={"SubscriptionId": subscription_id})
