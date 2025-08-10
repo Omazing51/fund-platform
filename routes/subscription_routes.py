@@ -13,6 +13,6 @@ def subscribe_to_fund(payload: SubscriptionCreate):
     return service.subscribe(payload.FundId, payload.NotificationMethod)
 
 @router.get("/subscriptions")
-def get_all_subscriptions():
-    subscriptions = service.get_all_subscriptions()
-    return subscriptions
+def get_subscriptions():
+    subs = repo.subscriptions_table.scan().get("Items", [])
+    return {"data": subs}
