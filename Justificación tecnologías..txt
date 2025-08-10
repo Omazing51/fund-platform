@@ -1,0 +1,11 @@
+Backend: Python + FastAPI
+Opté por FastAPI para desarrollar los endpoints REST porque ofrece un framework ligero, rápido y fácil de testear. El código sigue principios SOLID y Clean Architecture, garantizando una base mantenible y escalable. Implementé AWS SES y AWS SNS para notificaciones por email y SMS.
+
+Frontend: React + TailwindCSS  
+Utilicé React por su flexibilidad y ecosistema sólido. La interfaz es moderna, responsive y optimizada para diferentes dispositivos, usando TailwindCSS para estilos rápidos y consistentes. Organicé el código con patrones como feature-based structure y hooks pattern, mejorando la separación de responsabilidades.
+
+Base de datos: DynamoDB
+Elegí DynamoDB por su baja latencia y alta escalabilidad. Usé transacciones y condition expressions para garantizar consistencia y atomicidad en actualizaciones críticas, como el manejo de saldos.
+
+Infraestructura y Despliegue: AWS CloudFormation + Docker + ECS + S3 + CloudFront  
+Para el backend pensé que lo mejor es empaquetar en una imagen Docker y lo para publicarlo en Amazon ECR. Orquestarlo en ECS con Fargate detrás de un Application Load Balancer para escalar automáticamente. El frontend se desplegarlo desde S3 con CloudFront como CDN para tener mejor latencia. Variables de entorno y secretos se almacenaron en AWS SSM Parameter Store. Toda la infraestructura esta definida en el archivo CloudFormation.yaml que se encuentra en el repositorio.
